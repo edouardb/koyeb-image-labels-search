@@ -1,65 +1,95 @@
-import Head from 'next/head'
-import styles from '../styles/Home.module.css'
+/** @format */
 
-export default function Home() {
-  return (
-    <div className={styles.container}>
-      <Head>
-        <title>Create Next App</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+import { findResultsState } from "react-instantsearch-dom/server";
+import { isEqual } from "lodash";
+import { withRouter } from "next/router";
+import algoliasearch from "algoliasearch/lite";
+import InstantSearch from "components/instant-search";
+import PropTypes from "prop-types";
+import qs from "qs";
+import React from "react";
 
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
+const searchClient = algoliasearch(
+  __ALGOLIA_APP_ID__,
+  __ALGOLIA_SEARCH_APP_KEY__
+);
 
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.js</code>
-        </p>
+const updateAfter = 700;
 
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h3>Documentation &rarr;</h3>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
+const createURL = (state) => `?${qs.stringify(state)}`;
 
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h3>Learn &rarr;</h3>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
+const pathToSearchState = (path) =>
+  path.includes("?") ? qs.parse(path.slice(path.indexOf("?") + 1)) : {};
 
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className={styles.card}
-          >
-            <h3>Examples &rarr;</h3>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
+const searchStateToURL = (searchState) =>
+  searchState ? `${window.location.pathname}?${qs.stringify(searchState)}` : "";
 
-          <a
-            href="https://vercel.com/import?filter=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h3>Deploy &rarr;</h3>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
-        </div>
-      </main>
+const DEFAULT_PROPS = {
+  searchClient,
+  indexName: __ALGOLIA_INDICE__,
+};
 
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <img src="/vercel.svg" alt="Vercel Logo" className={styles.logo} />
-        </a>
-      </footer>
-    </div>
-  )
+class Home extends React.Component {
+  static propTypes = {
+    router: PropTypes.object.isRequired,
+    resultsState: PropTypes.object,
+    searchState: PropTypes.object,
+  };
+
+  state = {
+    searchState: this.props.searchState,
+    lastRouter: this.props.router,
+  };
+
+  static async getInitialProps({ asPath }) {
+    const searchState = pathToSearchState(asPath);
+    const resultsState = await findResultsState(InstantSearch, {
+      ...DEFAULT_PROPS,
+      searchState,
+    });
+
+    return {
+      resultsState,
+      searchState,
+    };
+  }
+
+  static getDerivedStateFromProps(props, state) {
+    if (!isEqual(state.lastRouter, props.router)) {
+      return {
+        searchState: pathToSearchState(props.router.asPath),
+        lastRouter: props.router,
+      };
+    }
+
+    return null;
+  }
+
+  onSearchStateChange = (searchState) => {
+    clearTimeout(this.debouncedSetState);
+
+    this.debouncedSetState = setTimeout(() => {
+      const href = searchStateToURL(searchState);
+
+      this.props.router.push(href, href, {
+        shallow: true,
+      });
+    }, updateAfter);
+
+    this.setState({ searchState });
+  };
+
+  render() {
+    return (
+      <InstantSearch
+        {...DEFAULT_PROPS}
+        searchState={this.state.searchState}
+        resultsState={this.props.resultsState}
+        createURL={createURL}
+        onSearchStateChange={this.onSearchStateChange}
+      />
+    );
+  }
 }
+
+export default withRouter(Home);
