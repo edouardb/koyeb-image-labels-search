@@ -18,7 +18,7 @@ export const HitComponent = ({ hit, size }) => {
     <div className="flex flex-col bg-white rounded p-4 items-center shadow-lg">
       <img
         className="h-64 w-full object-cover"
-        src={hit?.imageUrl}
+        src={hit?.imageUrl.replace('https:', 'http:')}
         alt={hit.display_name}
       />
       <div class="flex justify-between mt-2">
