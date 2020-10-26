@@ -11,7 +11,7 @@ import React from "react";
 
 const searchClient = algoliasearch(
   __ALGOLIA_APP_ID__,
-  __ALGOLIA_SEARCH_APP_KEY__
+  __ALGOLIA_SEARCH_API_KEY__
 );
 
 const updateAfter = 700;
