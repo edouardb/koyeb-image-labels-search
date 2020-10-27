@@ -4931,6 +4931,11 @@ qs-stringify@^1.1.0:
   resolved "https://registry.yarnpkg.com/qs-stringify/-/qs-stringify-1.2.1.tgz#9b39ef6b816bd83309628fc9dad435fc0eccc28b"
   integrity sha512-2N5xGLGZUxpgAYq1fD1LmBSCbxQVsXYt5JU0nU3FuPWO8PlCnKNFQwXkZgyB6mrTdg7IbexX4wxIR403dJw9pw==
 
+qs@^6.9.4:
+  version "6.9.4"
+  resolved "https://registry.yarnpkg.com/qs/-/qs-6.9.4.tgz#9090b290d1f91728d3c22e54843ca44aea5ab687"
+  integrity sha512-A1kFqHekCTM7cz0udomYUoYNWjBebHm/5wzU/XqrBRBNWectVH0QIiN+NEcZ0Dte5hvzHwbr8+XQmguPhJ6WdQ==
+
 querystring-es3@^0.2.0:
   version "0.2.1"
   resolved "https://registry.yarnpkg.com/querystring-es3/-/querystring-es3-0.2.1.tgz#9ec61f79049875707d69414596fd907a4d711e73"
