@@ -13,7 +13,7 @@ functions:
         value_from_secret: algolia-api-key
       ALGOLIA_INDEX:
         value_from_secret: algolia-index
-      FASTLY_ENDPOINT: http://cdn.koyeb-stores.prod.fastly.net
+      FASTLY_ENDPOINT: http://cdn.image-labels-search.com.global.prod.fastly.net/
     volumes:
       - store: image-labels
     events:
