@@ -3,6 +3,14 @@
 const webpack = require("webpack");
 
 module.exports = {
+  rewrites() {
+    return [
+      {
+        source: "/images/:key",
+        destination: "/api/images/:key",
+      },
+    ];
+  },
   webpack: (config) => {
     config.plugins = config.plugins || [];
 

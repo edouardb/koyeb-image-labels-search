@@ -1,9 +1,9 @@
 /** @format */
 
 "use strict";
-const Rekognition = require("aws-sdk/clients/rekognition");
-const algoliasearch = require("algoliasearch");
-const S3 = require("aws-sdk/clients/s3");
+import algoliasearch from "algoliasearch";
+import Rekognition from "aws-sdk/clients/rekognition";
+import S3 from "aws-sdk/clients/s3";
 
 const executeRekognition = async (
   rekognitionInstance,
@@ -24,7 +24,7 @@ const executeRekognition = async (
   }
 };
 
-const indexLabels = async (objectID, detectedLabels, imageUrl) => {
+const indexLabels = async (objectID, detectedLabels, key) => {
   try {
     const client = algoliasearch(
       process.env.ALGOLIA_APP_ID,
@@ -36,7 +36,7 @@ const indexLabels = async (objectID, detectedLabels, imageUrl) => {
     await index.partialUpdateObject(
       {
         objectID,
-        imageUrl,
+        key,
         detectedLabels,
       },
       { createIfNotExists: true }
@@ -109,10 +109,6 @@ const validateEnvironment = (bucket) => {
       "Environment variables ALGOLIA_APP_ID, ALGOLIA_INDEX and ALGOLIA_API_KEY must be set."
     );
   }
-
-  if (!process.env.FASTLY_ENDPOINT) {
-    throw new Error("Environment variables FASTLY_ENDPOINT must be set.");
-  }
 };
 
 const handler = async (event) => {
@@ -131,11 +127,7 @@ const handler = async (event) => {
     objectbBody
   );
 
-  await indexLabels(
-    key,
-    detectedLabels,
-    `${process.env.FASTLY_ENDPOINT}/${key}`
-  );
+  await indexLabels(key, detectedLabels, `${key}`);
 };
 
 module.exports.handler = handler;
