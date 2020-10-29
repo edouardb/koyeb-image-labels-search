@@ -1,9 +1,9 @@
 /** @format */
 
 "use strict";
-import algoliasearch from "algoliasearch";
-import Rekognition from "aws-sdk/clients/rekognition";
-import S3 from "aws-sdk/clients/s3";
+const algoliasearch = require("algoliasearch");
+const Rekognition = require("aws-sdk/clients/rekognition");
+const S3 = require("aws-sdk/clients/s3");
 
 const executeRekognition = async (
   rekognitionInstance,
@@ -24,7 +24,7 @@ const executeRekognition = async (
   }
 };
 
-const indexLabels = async (objectID, detectedLabels, key) => {
+const indexLabels = async (objectID, detectedLabels) => {
   try {
     const client = algoliasearch(
       process.env.ALGOLIA_APP_ID,
@@ -36,7 +36,7 @@ const indexLabels = async (objectID, detectedLabels, key) => {
     await index.partialUpdateObject(
       {
         objectID,
-        key,
+
         detectedLabels,
       },
       { createIfNotExists: true }
@@ -127,7 +127,7 @@ const handler = async (event) => {
     objectbBody
   );
 
-  await indexLabels(key, detectedLabels, `${key}`);
+  await indexLabels(key, detectedLabels);
 };
 
 module.exports.handler = handler;

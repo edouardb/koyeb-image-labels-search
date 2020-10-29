@@ -16,7 +16,7 @@ export const HitComponent = ({ hit }) => {
     <div className="max-w-sm rounded overflow-hidden shadow-lg">
       <img
         className="h-64 w-full object-cover"
-        src={`/images/${hit?.key}`}
+        src={`/images/${hit?.objectID}`}
         alt={hit.display_name}
       />
       <div className="px-6 pt-4 pb-2">
