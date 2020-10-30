@@ -10,8 +10,8 @@ import qs from "qs";
 import React from "react";
 
 const searchClient = algoliasearch(
-  process.env.NEXT_ALGOLIA_APP_ID,
-  process.env.NEXT_ALGOLIA_SEARCH_API_KEY
+  process.env.NEXT_PUBLIC_ALGOLIA_APP_ID,
+  process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY
 );
 
 const updateAfter = 700;
@@ -26,7 +26,7 @@ const searchStateToURL = (searchState) =>
 
 const DEFAULT_PROPS = {
   searchClient,
-  indexName: process.env.NEXT_ALGOLIA_INDEX,
+  indexName: process.env.NEXT_PUBLIC_ALGOLIA_INDEX,
 };
 
 class Home extends React.Component {
