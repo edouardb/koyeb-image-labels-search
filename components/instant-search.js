@@ -4,7 +4,6 @@ import PropTypes from "prop-types";
 import React, { useState } from "react";
 import Uppy from "components/uploader";
 import {
-  connectRefinementList,
   connectSearchBox,
   connectInfiniteHits,
   Configure,
@@ -96,25 +95,6 @@ const SearchBox = ({ currentRefinement, refine }) => {
 
 const CustomSearchBox = connectSearchBox(SearchBox);
 
-const RefinementList = ({ items, currentRefinement, refine }) => {
-  return items?.map((item) => (
-    <label key={item.label} className="inline-flex items-center my-2">
-      <input
-        type="checkbox"
-        className="form-checkbox h-5 w-5 text-gray-600"
-        checked={currentRefinement?.includes(item.label)}
-        onChange={(event) => {
-          event.preventDefault();
-          refine(item.value);
-        }}
-      />
-      <span className="ml-2 text-gray-700">{item.label}</span>
-    </label>
-  ));
-};
-
-const CustomRefinementList = connectRefinementList(RefinementList);
-
 export default class extends React.Component {
   static propTypes = {
     searchState: PropTypes.object,
@@ -133,7 +113,7 @@ export default class extends React.Component {
         searchState={this.props.searchState}
         createURL={this.props.createURL}
         indexName={this.props.indexName}
-        onSearchStateChange={this.props.onSearchStateChange}
+        onSearchStateChange={this.props.onSearchStateChangse}
         {...this.props}
       >
         <Configure hitsPerPage={100} />
@@ -141,17 +121,6 @@ export default class extends React.Component {
           <div className="grid grid-cols-4">
             <div className="col-span-4">
               <CustomSearchBox />
-            </div>
-            <div className="col-span-auto">
-              <div className="flex flex-col">
-                <h2 className="font-black text-2xl">Labels</h2>
-                <CustomRefinementList
-                  searchable
-                  attribute="detectedLabels.Name"
-                />
-              </div>
-            </div>
-            <div className="col-span-4 md:col-span-3">
               <CustomHits minHitsPerPage={100} />
             </div>
           </div>
